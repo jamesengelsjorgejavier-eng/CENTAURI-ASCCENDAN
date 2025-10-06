@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CENTAURI ASCENDAN - Space Habitat Simulation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0a3d62;
+            --secondary-color: #3c6382;
+            --accent-color: #9b59b6; /* Changed from orange to purple */
+            --text-light: #f5f6fa;
+            --text-dark: #2c3e50;
+            --bg-dark: #0b0c10;
+            --bg-medium: #1f2833;
+            --bg-light: #45505d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 4s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(rgba(11, 12, 16, 0.7), rgba(11, 12, 16, 0.7)), url('https://www.google.com/url?sa=i&url=https%3A%2F%2Fwallpaperscraft.com%2Fdownload%2Fspace_station_iss_world_orbit_stars_58256%2F1920x1080&psig=AOvVaw22aLatv3g3ajp1W6D2o-mQ&ust=1759784216637000&source=images&cd=vfe&opi=89978449&ved=0CBUQ3YkBahcKEwiw2M2e-Y2QAxUAAAAAHQAAAAAQBA');
+            background-size: cover;
+            background-position: center;
+            padding: 60px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(10, 61, 98, 0.3) 0%, rgba(11, 12, 16, 0.7) 100%);
+            z-index: -1;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            text-shadow: 0 0 20px rgba(155, 89, 182, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        .logo-img {
+            max-height: 150px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 30px;
+            color: var(--text-light);
+        }
+
+        .header-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        nav {
+            background-color: var(--bg-medium);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        nav li {
+            margin: 0 15px;
+        }
+
+        nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        nav a::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: width 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent-color);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-align: center;
+            color: var(--accent-color);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+
+        .card {
+            background-color: var(--bg-medium);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .card-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .status-ready {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .status-progress {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        .status-pending {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: var(--bg-dark);
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.3s;
+            margin-top: 15px;
+        }
+
+        .btn:hover {
+            background-color: #8e44ad;
+            transform: translateY(-3px);
+        }
+
+        .btn.disabled {
+            background-color: var(--bg-light);
+            color: var(--text-light);
+            cursor: not-allowed;
+        }
+
+        .btn.disabled:hover {
+            transform: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #072a4a;
+        }
+
+        .habitat-classes {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .habitat-class {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--bg-medium);
+            border-radius: 10px;
+            padding: 25px;
+            margin: 0 10px 20px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .habitat-class:hover {
+            transform: translateY(-10px);
+        }
+
+        .habitat-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .habitat-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background-color: var(--accent-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            width: 50%;
+            padding: 20px 40px;
+            box-sizing: border-box;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+
+        .timeline-content {
+            background-color: var(--bg-medium);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .timeline-date {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .team-member {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .member-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 20px;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-light);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .member-info h3 {
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 5px;
+            color: var(--accent-color);
+        }
+
+        .member-role {
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        .progress-container {
+            background-color: var(--bg-light);
+            border-radius: 10px;
+            height: 20px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, var(--secondary-color), var(--accent-color));
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .resource-card {
+            background-color: var(--bg-medium);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .resource-icon {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .resource-usage {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--bg-light);
+            font-style: italic;
+            color: #bdc3c7;
+        }
+
+        footer {
+            background-color: var(--bg-medium);
+            padding: 40px 0 20px;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin: 0 15px 20px;
+        }
+
+        .footer-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            border-radius: 50%;
+            background-color: var(--bg-light);
+            color: var(--text-light);
+            margin: 0 10px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .social-icons a:hover {
+            background-color: var(--accent-color);
+            color: var(--bg-dark);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--bg-light);
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .luna-e {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            background-color: var(--bg-medium);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            z-index: 1000;
+        }
+
+        .luna-e:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .luna-e i {
+            font-size: 2rem;
+            color: var(--accent-color);
+        }
+
+        .chat-window {
+            position: fixed;
+            bottom: 110px;
+            right: 20px;
+            width: 350px;
+            height: 450px;
+            background-color: var(--bg-medium);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: none;
+            flex-direction: column;
+            z-index: 999;
+        }
+
+        .chat-header {
+            background: linear-gradient(rgba(11, 12, 16, 0.7), rgba(11, 12, 16, 0.7)), url('https://z-cdn-media.chatglm.cn/files/bcff1c98-491d-478e-9e60-ae8847a35d4f_download.jpg?auth_key=1791234603-28f548107ee04bd38c765ee195ab41dc-0-0ff7644684531fa682d71753fc5b9733');
+            background-size: cover;
+            background-position: center;
+            color: var(--text-light);
+            padding: 15px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            display: flex;
+        }
+
+        .chat-message.user {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            background-color: var(--bg-light);
+        }
+
+        .chat-message.user .message-bubble {
+            background-color: var(--accent-color);
+            color: var(--bg-dark);
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .chat-input input {
+            flex: 1;
+            background-color: var(--bg-light);
+            border: none;
+            border-radius: 20px;
+            padding: 10px 15px;
+            color: var(--text-light);
+            margin-right: 10px;
+        }
+
+        .chat-input button {
+            background-color: var(--accent-color);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: var(--bg-dark);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .chat-input button:hover {
+            background-color: #8e44ad;
+        }
+
+        .bibliography {
+            margin-top: 40px;
+        }
+
+        .bibliography-item {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            text-indent: -20px;
+        }
+
+        .npc-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--bg-light);
+        }
+
+        .npc-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .presentations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .presentation-card {
+            background-color: var(--bg-medium);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .presentation-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .presentation-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .presentation-container {
+            background-color: var(--bg-medium);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .presentation-iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .video-iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .presentation-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+            gap: 10px;
+        }
+
+        .presentation-btn {
+            background-color: var(--accent-color);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .presentation-btn:hover {
+            background-color: #8e44ad;
+        }
+
+        .featured-video {
+            background-color: var(--bg-medium);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .featured-video h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+
+        .featured-video .video-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .habitat-classes {
+                flex-direction: column;
+            }
+            
+            .habitat-class {
+                margin: 0 0 20px;
+            }
+            
+            .timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 20px;
+                text-align: left;
+            }
+            
+            .timeline-item:nth-child(even) {
+                left: 0;
+            }
+            
+            .chat-window {
+                width: calc(100% - 40px);
+                right: 20px;
+                left: 20px;
+            }
+            
+            .presentation-iframe {
+                height: 400px;
+            }
+            
+            .presentations-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+
+    <header>
+        <div class="container">
+            <img src="https://z-cdn-media.chatglm.cn/files/1f5ea8d8-2e0d-4605-9096-4697eb4a2cf0_Captura%20de%20pantalla%202025-10-05%20222022.png?auth_key=1791259860-768d7c19328346558a5bafc086cb9735-0-706dcb4a180dcedc8706e3e2baba3102" alt="CENTAURI ASCENDAN Logo" class="logo-img">
+            <p class="tagline">Ascending to the Stars: Simulate Your Space Future</p>
+            <div class="header-buttons">
+                <a href="#presentation" class="btn">View Presentations</a>
+                <a href="https://youtu.be/Xni_SQGbuXY" target="_blank" class="btn btn-primary">
+                    <i class="fab fa-youtube"></i> Watch Project Video
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#details">Details</a></li>
+            <li><a href="#resources">Resources</a></li>
+            <li><a href="#presentation">Media</a></li>
+            <li><a href="#team">Team</a></li>
+            <li><a href="#bibliography">Bibliography</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section id="about">
+        <div class="container">
+            <h2 class="section-title">About the Project</h2>
+            
+            <div class="card">
+                <span class="status-badge status-ready">Prepared</span>
+                <h3 class="card-title">CENTAURI ASCENDAN</h3>
+                <img src="https://z-cdn-media.chatglm.cn/files/b8b5fa07-88a3-450f-b37b-2ec55b8117e6_Captura%20de%20pantalla%202025-10-05%20182843.png?auth_key=1791259860-96c5c0b7d1d24801aa7797f5a270de61-0-22c9d23f5e175e9a9e9bf8504e112094" alt="Game Screenshot" class="card-image">
+                <p>An interactive simulation environment (Roblox video game) based on the space habitat classes proposed by NASA (Class I: rigid pre-integrated, Class II: hybrid, Class III: inflatable or built in situ with lunar regolith). It includes a guide robot called "Luna-E", a virtual companion that explains complex concepts in a simple and accessible way, like a robotic astronaut accompanying the player on missions. In the future, it aims to evolve into an immersive virtual reality (VR) experience for greater realism and engagement.</p>
+                <p><strong>Target Audience:</strong> General public, with emphasis on children and youth from Peru and Latin America. The project seeks to motivate those who feel inexperienced or distant from space exploration, fostering interest in cosmological, space, and innovative topics. Through intuitive mechanics, it inspires rediscovery of skills and aspiration for STEM careers, reducing the gap between fiction and space reality in underrepresented regions.</p>
+            </div>
+
+            <div class="card">
+                <span class="status-badge status-ready">Prepared</span>
+                <h3 class="card-title">High-Level Summary</h3>
+                <p>CENTAURI ASCENDAN is an interactive Roblox video game that simulates lunar and Martian habitats inspired by NASA projects, such as the Lunar Lantern from the Olympus program. It addresses real space challenges, such as cosmic radiation, extreme temperatures, and resource management, contrasting science fiction expectations with scientific realities. With the guide robot "Luna-E", it offers educational immersion and realistic physical effects, promoting STEM motivation for young people. It is essential for accessible education and future mission planning, with plans to expand to VR for a deeper experience.</p>
+            </div>
+
+            <div class="habitat-classes">
+                <div class="habitat-class">
+                    <div class="habitat-icon"><i class="fas fa-cube"></i></div>
+                    <h3 class="habitat-title">Class I</h3>
+                    <p>Rigid pre-integrated habitats</p>
+                </div>
+                <div class="habitat-class">
+                    <div class="habitat-icon"><i class="fas fa-project-diagram"></i></div>
+                    <h3 class="habitat-title">Class II</h3>
+                    <p>Hybrid habitats</p>
+                </div>
+                <div class="habitat-class">
+                    <div class="habitat-icon"><i class="fas fa-expand-arrows-alt"></i></div>
+                    <h3 class="habitat-title">Class III</h3>
+                    <p>Inflatable or in-situ constructed habitats</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="details">
+        <div class="container">
+            <h2 class="section-title">Detailed Description</h2>
+            
+            <div class="card">
+                <h3 class="card-title">Problem It Solves</h3>
+                <p>In Peru and Latin America, many children and youth lack interest in STEM careers due to the perception that space exploration is unattainable, distant, and exclusive to developed countries. This creates an educational gap, with low enrollment rates in sciences (according to UNESCO reports, only 30% of Latin American students choose STEM), aggravated by lack of accessible and motivating tools. CENTAURI ASCENDAN solves this by offering a free and interactive simulation that makes space science tangible, fostering curiosity and self-efficacy through fun and educational gameplay.</p>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title">Storytelling: Inspiring Figures in Space Exploration</h3>
+                
+                <h4 style="margin-top: 20px; color: var(--accent-color);">Aracely Quispe Neira: A Peruvian Star at NASA</h4>
+                <p>Imagine a girl in a small town in Lambayeque, Peru, in the 1980s. Aracely Quispe Neira, born in 1982 in Marripón, grew up in a humble environment without advanced technological resources. However, at age 6, upon learning about the 1969 Apollo 11 mission (which landed on the Moon), she felt an irresistible call toward space. "From a very young age, I knew I wanted to dedicate myself to sciences," Aracely recalls in interviews. This inspiration, similar to how modern video games capture young people's imagination with fictional worlds like Starcraft II or space simulators, propelled her to overcome obstacles: high university costs, cultural beliefs that discouraged women in STEM, and migration to the U.S. With perseverance, she obtained scholarships thanks to her karate skills and studied Systems Engineering and Astronautics. Today, Aracely is a senior engineer at NASA, leading missions like the James Webb Telescope (launched in 2021), and the first Latina to command three space projects. Her personal brand, "Aracely Quispe Neira, a story that inspires," motivates thousands in Latin America. Just as Aracely was motivated by exploration stories, CENTAURI ASCENDAN uses video games to ignite that spark in Peruvian youth, demonstrating that space is not just for "experts," but for dreamers like her.</p>
+                
+                <h4 style="margin-top: 20px; color: var(--accent-color);">Nancy Grace Roman: The "Mother of Hubble"</h4>
+                <p>Long before the Hubble Space Telescope revolutionized our view of the cosmos, another visionary fought to make it a reality. Nancy Grace Roman, born in 1925, was an American astronomer who was one of the first female executives at NASA. From a young age, she was captivated by the stars, but was often discouraged from pursuing astronomy because it was considered unsuitable for women. Undeterred, she earned her doctorate in astronomy and later became the first Chief of Astronomy in the Office of Space Science at NASA, and the first woman to hold an executive position at the agency. It was here that she laid the groundwork for space-based astronomy. When the idea of a large space telescope was met with skepticism, Dr. Roman used her expertise and political savvy to champion the project, organizing astronomers and engineers, convincing Congress of its value, and shepherding it through its early development stages. Her tireless advocacy was instrumental in the creation of the Hubble Space Telescope, which has since provided breathtaking images and groundbreaking discoveries for decades. Nancy Grace Roman's story is a testament to breaking barriers and having the vision to see beyond the horizon, inspiring a new generation to look up and dream big.</p>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title">General Objective</h3>
+                <p>To foster interest and education in sustainable space exploration among children and youth from Peru and Latin America, through an interactive simulation that integrates scientific concepts from NASA and promotes STEM vocations.</p>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title">Specific Objectives</h3>
+                <ul>
+                    <li>Educate about space habitat classes (I-III) and physical/chemical variables (e.g., radiation, airtightness, artificial atmosphere with ECLSS, water management via Sabatier and hydroponic foods), allowing real-time visualization of effects.</li>
+                    <li>Integrate the robot "Luna-E" as an educational guide to explain real challenges, such as radiation protection with polyethylene and water, or temperatures from -270°C to +120°C.</li>
+                    <li>Motivate underrepresented users through gamified mechanics, with sustainability metrics and rewards, preparing for a future VR version.</li>
+                    <li>Contribute to educational equity, measuring impact through metrics such as playtime and user feedback.</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h3 class="card-title">Contributions to SDGs (Sustainable Development Goals)</h3>
+                <p>The project aligns with several UN SDGs:</p>
+                <ul>
+                    <li><strong>SDG 4: Quality Education</strong> – Provides inclusive and accessible learning about space sciences, free on Roblox, reaching children without formal resources.</li>
+                    <li><strong>SDG 5: Gender Equality</strong> – Inspires girls and women in STEM, highlighting figures like Aracely Quispe and Nancy Roman, and promoting inclusive ergonomic designs in microgravity.</li>
+                    <li><strong>SDG 9: Industry, Innovation and Infrastructure</strong> – Fosters innovation in sustainable habitats, using NASA data to simulate autonomous construction (MMPACT) and in-situ resources.</li>
+                    <li><strong>SDG 10: Reduced Inequalities</strong> – Reduces regional gaps by making space exploration accessible to youth from Peru/Latin America, aligned with CSA educational toolkits.</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <span class="status-badge status-progress">Partially Ready</span>
+                <h3 class="card-title">What It Does and How It Works</h3>
+                <img src="https://z-cdn-media.chatglm.cn/files/385e3f0a-a645-4cb7-bd04-0ffe03a2d950_Captura%20de%20pantalla%202025-10-05%20204426.png?auth_key=1791259860-b4eabe3a0ba24fde84fb4020c65f53a3-0-92a573cb66cd10a2de923b654727c663" alt="Habitat Construction" class="card-image">
+                <p>The game allows designing and simulating 3D habitats in lunar/Martian environments. Guided by "Luna-E", users build structures with Roblox tools, apply variables (cosmic radiation that damages health/equipment, airtightness to maintain atmosphere, microgravity affecting mobility) and observe realistic effects, such as temporal degradation or inflatable expansion. It includes simulation of net habitable volume, crew, and chemical resources (e.g., 21% oxygen/78% nitrogen recycled with ECLSS). The interface is intuitive, with tutorials for children, and VR plans integrate sensors for sensory immersion.</p>
+                
+                <div class="npc-section">
+                    <h4 class="npc-title">Meet the NPCs: WALL-E</h4>
+                    <img src="https://z-cdn-media.chatglm.cn/files/45ea9e3d-d15e-40c7-bf1e-27a7f9df2e22_Captura%20de%20pantalla%202025-10-05%20215800.png?auth_key=1791259860-19ba6fdb664e49818f0cf5c7e9ba3d58-0-4ebd685c8ca1531942a2b892760194f2" alt="WALL-E NPC" class="card-image">
+                    <p>To make learning about sustainability even more engaging, we've introduced a special Non-Player Character (NPC): WALL-E! Based on the beloved character from Disney/Pixar, WALL-E appears in the game's resource management modules. He helps players understand the critical importance of recycling and waste management in a closed-loop environment like a space habitat. Players can assist WALL-E in collecting and processing waste materials, which are then converted into useful resources for habitat maintenance and expansion through simulated systems like the Sabatier process. This fun, interactive element teaches valuable lessons about sustainability and resource efficiency, making complex concepts accessible and memorable for players of all ages.</p>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 60%;"></div>
+                </div>
+                <p><strong>Pending:</strong> Advanced implementation of variables and UI.</p>
+            </div>
+            
+            <div class="card">
+                <span class="status-badge status-ready">Ready in Concept</span>
+                <h3 class="card-title">Benefits and Objectives</h3>
+                <p>Provides immersive education that bridges the gap between fiction (Star Wars, Starcraft II) and NASA reality, such as designs from 1997. Benefits: Sustainability metrics (e.g., efficiency in water/food recycling), STEM motivation, and tool for Moon to Mars missions. Expansion to VR will increase engagement, allowing "living" space challenges.</p>
+            </div>
+            
+            <div class="card">
+                <span class="status-badge status-ready">Ready</span>
+                <h3 class="card-title">Tools, Languages, Hardware/Software</h3>
+                <p>Roblox Studio (Lua for scripts), Blender (3D OBJ models with temperature/volume effects). Hardware: Standard PC (8 GB RAM, Intel Core i5), accessible to general public; future VR compatible with Oculus/Meta Quest.</p>
+            </div>
+            
+            <div class="card">
+                <span class="status-badge status-ready">Ready</span>
+                <h3 class="card-title">Use of NASA Data</h3>
+                <p>3D Models (https://science.nasa.gov/3d-resources/); habitable volume ("Defining the Net Habitable Volume"); Moon to Mars plans; Artemis 3 architecture (SLS, https://www.nasa.gov/reference/icps/); ergonomics (https://ntrs.nasa.gov/api/citations/20200002973/downloads/20200002973.pdf); habitat classification (https://spacearchitect.org/pubs/NASA-CP-97-206241-Cohen.pdf); Class III challenges (https://ntrs.nasa.gov/api/citations/20210022105/downloads/...); Class II (https://ntrs.nasa.gov/api/citations/20190000847/downloads/...). They inspire mechanics such as shielding and ECLSS.</p>
+            </div>
+            
+            <div class="card">
+                <span class="status-badge status-progress">Partially Ready</span>
+                <h3 class="card-title">Other Data and Resources</h3>
+                <p>
+                    <strong>CSA "Why the Moon?":</strong> Used for lunar challenges (low gravity, radiation, regolith). (<a href="https://www.asc-csa.gc.ca/eng/youth-educators/why-the-moon.asp" target="_blank">https://www.asc-csa.gc.ca/eng/youth-educators/why-the-moon.asp</a>)<br>
+                    <strong>Blender:</strong> Used for 3D modeling and asset creation. (<a href="https://www.blender.org/" target="_blank">https://www.blender.org/</a>)<br>
+                    <strong>Roblox:</strong> The platform for the interactive simulation. (<a href="https://www.roblox.com/" target="_blank">https://www.roblox.com/</a>)
+                </p>
+            </div>
+            
+            <div class="card">
+                <span class="status-badge status-ready">Ready (mark assets)</span>
+                <h3 class="card-title">Use of AI</h3>
+                <p>
+                    <strong>Chat Qwen:</strong> Used for generating text and code drafts. (<a href="https://chat.qwen.ai/" target="_blank">https://chat.qwen.ai/</a>)<br>
+                    <strong>OpenArt AI:</strong> Used for creating Class II textures (marked as "AI Generated"). (<a href="https://openart.ai/" target="_blank">https://openart.ai/</a>)<br>
+                    <strong>Grok:</strong> Used for information synthesis and translation. (<a href="https://grok.x.ai/" target="_blank">https://grok.x.ai/</a>)
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="resources">
+        <div class="container">
+            <h2 class="section-title">Detailed Use of NASA Resources</h2>
+            
+            <div class="card">
+                <img src="https://z-cdn-media.chatglm.cn/files/01d788c7-e334-41d0-b6e1-4752e9ca08d2_Captura%20de%20pantalla%202025-10-05%20181341.png?auth_key=1791259860-664f39dd5b5a43ddb4f5f7fd87801a87-0-163b733668c6dfb31b33df6d44252d58" alt="Development Environment" class="card-image">
+                <p>In the "CENTAURI ASCENDAN" project, NASA resources are strategically and multifacetedly integrated to ensure that the Roblox simulation is not only educational but also scientifically accurate and aligned with real space exploration standards. These resources, from public documents, 3D models, and technical guides, are used to model space habitats (Classes I-III) and simulate physical and chemical variables.</p>
+                
+                <h3 class="card-title">3D Models and Initial Visualizations</h3>
+                <p>They are imported directly into Blender to create habitat prototypes (e.g., the ovoid Lunar Lantern with hexagonal shell printed in lunar regolith). In Roblox, these become interactive objects for users to build and modify structures, observing effects such as inflatable expansion (Class III).</p>
+                
+                <h3 class="card-title">Technical Documents for Variable Simulation</h3>
+                <p>These guide simulation mechanics. For instance, habitable volume is calculated in real-time to evaluate if a habitat supports X crew members, integrating variables like radiation (shielding with polyethylene/water to reduce cancer risks), extreme temperatures (-270°C to +120°C with thermal control), airtightness (leak-proof materials), and microgravity (ergonomic designs for mobility).</p>
+                
+                <h3 class="card-title">Integration into Game Mechanics</h3>
+                <p>Data is translated into Lua scripts in Roblox for dynamic effects: e.g., cosmic radiation "damages" the habitat over time, reducing sustainability metrics. The evolution of designs (1997-present) is reflected in a "historical" mode where users see progression from rigid to inflatable.</p>
+            </div>
+            
+            <div class="card">
+                <img src="https://z-cdn-media.chatglm.cn/files/d66f1895-7a39-4e2d-9f6b-6317c160f025_Captura%20de%20pantalla%202025-10-05%20215625.png?auth_key=1791259860-feddb10f786b473783d4f7413940220d-0-f657dde70e5f9c3a578ad5836ec64002" alt="Class III Habitat" class="card-image">
+                <h3 class="card-title">Importance of AI in the Project</h3>
+                <p>AI plays a pivotal role in "CENTAURI ASCENDAN", accelerating development, improving accessibility, and enhancing creativity while maintaining an ethical focus. Its importance lies in three pillars:</p>
+                
+                <h4>1. Development and Content Efficiency</h4>
+                <p>Tools like Chat Qwen generated Lua script drafts to simulate variables and educational writing for "Luna-E". OpenArt AI created hyperrealistic textures for Class II habitats. Grok synthesized NASA/CSA information, translating complex documents into simple explanations for in-game tutorials.</p>
+                
+                <h4>2. Educational and Inclusive Improvement</h4>
+                <p>"Luna-E" incorporates AI for dynamic responses: adapts explanations to user level (e.g., for children, simplifies ECLSS as "magic air recycler"). In the future VR version, AI could generate personalized narratives, such as missions based on player interests.</p>
+                
+                <h4>3. Innovation and Scalability</h4>
+                <p>Facilitates VR expansion, using AI for procedural generation (e.g., variable lunar environments). Contributes to SDG 9 (innovation), aligning with NASA's use of AI in real missions (e.g., JWST data analysis).</p>
+            </div>
+            
+            <div class="card">
+                <img src="https://z-cdn-media.chatglm.cn/files/dfec6007-0d50-4f8d-9448-e6254373abb6_Captura%20de%20pantalla%202025-10-05%20214555.png?auth_key=1791259860-f8b82997afc04ad48d18a7c1b23aa4a-0-b8f6abdb259c5ad42a0e312fc6df910" alt="Game Scene" class="card-image">
+                <h3 class="card-title">Critical and Integral Criteria for Resource and AI Use</h3>
+                <p>To ensure integrity, rigorous ethical and technical criteria are applied, based on NASA guidelines and AI standards:</p>
+                
+                <h4>1. Scientific Accuracy and Verification (Critical)</h4>
+                <p>All NASA data is directly cited and validated with primary sources; simulations are tested against real equations. Criterion: >95% fidelity, verified by expert review.</p>
+                
+                <h4>2. Transparency and Attribution (Integral)</h4>
+                <p>NASA resources are attributed in game credits and forms. AI content is explicitly marked (e.g., "Texture generated by OpenArt AI") to avoid misinformation.</p>
+                
+                <h4>3. Accessibility and Inclusivity (Critical)</h4>
+                <p>Content in Spanish/English, with "Luna-E" adapting complexity; minimum hardware (8 GB RAM) for regional equity. Criterion: User testing with Peruvians for usability.</p>
+                
+                <h4>4. Ethics and Sustainability (Integral)</h4>
+                <p>NASA data is not modified; AI avoids biases. Complies with SDGs (e.g., no sensitive data exploitation). Criterion: Annual audit for positive impact, measuring metrics like young user retention.</p>
+                
+                <h4>5. Security and Privacy</h4>
+                <p>Anonymous Roblox APIs; no personal data collection. Criterion: GDPR/Peruvian laws compliance.</p>
+            </div>
+            
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fas fa-cube"></i></div>
+                    <h3>NASA 3D Models</h3>
+                    <p>Library of 3D models for lunar structures and inflatable habitat components.</p>
+                    <div class="resource-usage">
+                        <strong>Usage:</strong> Imported into Blender to create interactive habitat prototypes in Roblox, allowing users to build and modify structures.
+                    </div>
+                    <a href="https://science.nasa.gov/3d-resources/" target="_blank" class="btn">Visit Resource</a>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fas fa-file-alt"></i></div>
+                    <h3>Habitable Volume</h3>
+                    <p>Defining the Net Habitable Volume for Long Duration Exploration Missions.</p>
+                    <div class="resource-usage">
+                        <strong>Usage:</strong> Used to calculate real-time habitable volume in the game, determining how many crew members a habitat can support.
+                    </div>
+                    <a href="#" target="_blank" class="btn">View Document</a>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fas fa-rocket"></i></div>
+                    <h3>Moon to Mars Plans</h3>
+                    <p>Artemis mission plans, including habitat functions.</p>
+                    <div class="resource-usage">
+                        <strong>Usage:</strong> Provides the framework for mission scenarios in the game, from lunar base establishment to Mars preparation.
+                    </div>
+                    <a href="#" target="_blank" class="btn">Explore Plans</a>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fas fa-user-astronaut"></i></div>
+                    <h3>Space Ergonomics</h3>
+                    <p>Ergonomics specifications for microgravity designs.</p>
+                    <div class="resource-usage">
+                        <strong>Usage:</strong> Informs the design of interactive elements and character movements in the game to reflect real microgravity challenges.
+                    </div>
+                    <a href="https://ntrs.nasa.gov/api/citations/20200002973/downloads/20200002973.pdf" target="_blank" class="btn">View Specifications</a>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fas fa-home"></i></div>
+                    <h3>Habitat Classification</h3>
+                    <p>Taxonomy of habitat classes (I-III) for space exploration.</p>
+                    <div class="resource-usage">
+                        <strong>Usage:</strong> Forms the basis for the three habitat types available in the game, each with unique construction challenges and benefits.
+                    </div>
+                    <a href="https://spacearchitect.org/pubs/NASA-7CP-97-206241-Cohen.pdf" target="_blank" class="btn">View Classification</a>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fas fa-moon"></i></div>
+                    <h3>Why the Moon?</h3>
+                    <p>Lunar challenges (low gravity, radiation, regolith) by CSA.</p>
+                    <div class="resource-usage">
+                        <strong>Usage:</strong> Provides environmental parameters and challenges that players must overcome when building lunar habitats in the game.
+                    </div>
+                    <a href="https://www.asc-csa.gc.ca/eng/youth-educators/why-the-moon.asp" target="_blank" class="btn">Explore Challenges</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="presentation">
+        <div class="container">
+            <h2 class="section-title">Project Presentations</h2>
+            
+            <div class="featured-video">
+                <h3>Project Overview Video</h3>
+                <div class="video-container">
+                    <iframe class="video-iframe" src="https://www.youtube.com/embed/Xni_SQGbuXY" title="CENTAURI ASCENDAN Project Overview" allowfullscreen></iframe>
+                </div>
+            </div>
+            
+            <div class="featured-video">
+                <h3>Launch Video</h3>
+                <div class="video-container">
+                    <iframe class="video-iframe" src="https://www.youtube.com/embed/RcNidQVzBVk" title="CENTAURI ASCENDAN Launch Video" allowfullscreen></iframe>
+                </div>
+            </div>
+            
+            <h3 class="section-title">Additional Presentations</h3>
+            
+            <div class="presentations-grid">
+                <div class="presentation-card">
+                    <h3 class="presentation-title">How Habitats Reach Space</h3>
+                    <p>Explore our detailed presentation explaining the complex process of transporting space habitats from Earth to their final destinations in space. Learn about launch vehicles, deployment strategies, and the engineering challenges involved in getting these structures to the Moon and Mars.</p>
+                    
+                    <div class="presentation-container">
+                        <iframe class="presentation-iframe" src="https://www.canva.com/design/DAG08MRSA-U/MwTHaZrcTf1gGytfZyG63Q/view?embed" allowfullscreen="true" allow="fullscreen"></iframe>
+                        
+                        <div class="presentation-controls">
+                            <button class="presentation-btn" data-iframe="0">
+                                <i class="fas fa-expand"></i> Fullscreen
+                            </button>
+                            <button class="presentation-btn" data-iframe="0">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                            <button class="presentation-btn" data-link="https://www.canva.com/design/DAG08MRSA-U/MwTHaZrcTf1gGytfZyG63Q/edit?utm_content=DAG08MRSA-U&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="presentation-card">
+                    <h3 class="presentation-title">Luna-E: Our AI Guide</h3>
+                    <p>Discover Luna-E, our AI-powered robotic guide that helps players navigate the complexities of space habitat construction. This presentation explains how Luna-E uses artificial intelligence to provide educational content, answer questions, and guide players through the simulation in an engaging and accessible way.</p>
+                    
+                    <div class="presentation-container">
+                        <iframe class="presentation-iframe" src="https://www.canva.com/design/DAG04v9GpSg/75xgieZ2DFNaKZ36TuXR6g/view?embed" allowfullscreen="true" allow="fullscreen"></iframe>
+                        
+                        <div class="presentation-controls">
+                            <button class="presentation-btn" data-iframe="1">
+                                <i class="fas fa-expand"></i> Fullscreen
+                            </button>
+                            <button class="presentation-btn" data-iframe="1">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                            <button class="presentation-btn" data-link="https://www.canva.com/design/DAG04v9GpSg/75xgieZ2DFNaKZ36TuXR6g/edit?utm_content=DAG04v9GpSg&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="team">
+        <div class="container">
+            <h2 class="section-title">Development Team</h2>
+            
+            <div class="card">
+                <p>We are a team of six students from COAR Huánuco who believe that learning, when dynamic and entertaining, will always be effective. Our passion for space exploration and educational innovation drives us to create experiences that inspire the next generation of scientists and explorers.</p>
+            </div>
+            
+            <div class="team-member">
+                <div class="member-avatar">EM</div>
+                <div class="member-info">
+                    <h3>Eliseo Israel Morales Sanchez</h3>
+                    <p class="member-role">Student of Physics and Digital Society</p>
+                    <p><strong>Contributions:</strong> Design, structure, web design, and Luna-E design</p>
+                </div>
+            </div>
+            
+            <div class="team-member">
+                <div class="member-avatar">EE</div>
+                <div class="member-info">
+                    <h3>Estefano Esquivel Rodriguez</h3>
+                    <p class="member-role">Student of Physics and Digital Society</p>
+                    <p><strong>Contributions:</strong> Code design, Roblox structures, and partial demo</p>
+                </div>
+            </div>
+            
+            <div class="team-member">
+                <div class="member-avatar">EJ</div>
+                <div class="member-info">
+                    <h3>James Engels Jorge Javier</h3>
+                    <p class="member-role">Student of Physics and Digital Society</p>
+                    <p><strong>Contributions:</strong> 3D structure design and partial code</p>
+                </div>
+            </div>
+            
+            <div class="team-member">
+                <div class="member-avatar">RC</div>
+                <div class="member-info">
+                    <h3>Jolibert Ronaldiño Caqui Díaz</h3>
+                    <p class="member-role">Student of Physics and Business Management</p>
+                    <p><strong>Contributions:</strong> Lunar launch model and landing, Blender</p>
+                </div>
+            </div>
+            
+            <div class="team-member">
+                <div class="member-avatar">ST</div>
+                <div class="member-info">
+                    <h3>Sindhy Shaynez Berrospi Tolentino</h3>
+                    <p class="member-role">Student of Physics and Business Management</p>
+                    <p><strong>Contributions:</strong> Demo video structure, presentation, costs, AI interface design</p>
+                </div>
+            </div>
+            
+            <div class="team-member">
+                <div class="member-avatar">JC</div>
+                <div class="member-info">
+                    <h3>Jhely Espíritu Crispín</h3>
+                    <p class="member-role">Student of Physics and Business Management</p>
+                    <p><strong>Contributions:</strong> Design presentation and spacecraft theory</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="bibliography">
+        <div class="container">
+            <h2 class="section-title">Bibliography (APA 7th Edition)</h2>
+            
+            <div class="card bibliography">
+                <div class="bibliography-item">
+                    Canadian Space Agency. (n.d.). <em>Why the Moon?</em> Retrieved October 5, 2025, from https://www.asc-csa.gc.ca/eng/youth-educators/why-the-moon.asp
+                </div>
+                
+                <div class="bibliography-item">
+                    Capitol Technology University. (2014, September 8). <em>From Peru to NASA: A young scientist's journey</em>. Retrieved from https://www.captechu.edu/news-e
+                </div>
+                
+                <div class="bibliography-item">
+                    Cohen, M. M., & Kennedy, K. J. (1997). <em>Habitats and surface construction technology and development roadmap</em> (NASA Technical Report NASA-CP-97-206241). Space Architect. https://spacearchitect.org/pubs/NASA-CP-97-206241-Cohen.pdf
+                </div>
+                
+                <div class="bibliography-item">
+                    National Aeronautics and Space Administration. (2019). <em>Viability of hybrid habitat class II</em> (NASA Technical Report 20190000847). NASA Technical Reports Server. https://ntrs.nasa.gov/api/citations/20190000847/downloads/20190000847.pdf
+                </div>
+                
+                <div class="bibliography-item">
+                    National Aeronautics and Space Administration. (2020). <em>Human integration design handbook</em> (NASA Technical Report 20200002973). NASA Technical Reports Server. https://ntrs.nasa.gov/api/citations/20200002973/downloads/20200002973.pdf
+                </div>
+                
+                <div class="bibliography-item">
+                    National Aeronautics and Space Administration. (2021). <em>MMPACT: Moon to Mars Planetary Autonomous Construction Technology</em> (NASA Technical Report 20210022105). NASA Technical Reports Server. https://ntrs.nasa.gov/api/citations/20210022105/downloads/Master_2021.09.27_MMPACT%20AIAA%20Ascend.docx.pdf
+                </div>
+                
+                <div class="bibliography-item">
+                    National Aeronautics and Space Administration. (n.d.). <em>3D resources</em>. Science Mission Directorate. https://science.nasa.gov/3d-resources/
+                </div>
+                
+                <div class="bibliography-item">
+                    National Aeronautics and Space Administration. (n.d.). <em>Moon to Mars Architecture Definition Document</em>. NASA. https://www.nasa.gov/moon-to-mars/
+                </div>
+                
+                <div class="bibliography-item">
+                    National Aeronautics and Space Administration. (n.d.). <em>Interim Cryogenic Propulsion Stage (ICPS)</em>. NASA. https://www.nasa.gov/reference/icps/
+                </div>
+                
+                <div class="bibliography-item">
+                    Space station ISS in Earth orbit [Photograph]. (n.d.). Wallpapers Craft. Retrieved July 15, 2025, from https://wallpaperscraft.com/download/space_station_iss_world_orbit_stars_58256/1920x1080
+                </div>
+                
+                <div class="bibliography-item">
+                    Stromgren, M., et al. (n.d.). <em>Defining the net habitable volume for long duration exploration missions</em>. NASA. [Specific citation details would be added when available]
+                </div>
+                
+                <div class="bibliography-item">
+                    United Nations Educational, Scientific and Cultural Organization. (n.d.). <em>STEM education in Latin America</em>. UNESCO Institute for Statistics. [Specific citation details would be added when available]
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="container">
+            <h2 class="section-title">Contact</h2>
+            
+            <div class="card">
+                <h3 class="card-title">Connect With Us</h3>
+                <p>Do you have questions about CENTAURI ASCENDAN? Want to collaborate with us? We'd love to hear from you!</p>
+                
+                <div class="resource-grid">
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="fas fa-envelope"></i></div>
+                        <h3>Email</h3>
+                        <p>contact@centauri-ascendan.org</p>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="fab fa-twitter"></i></div>
+                        <h3>Twitter</h3>
+                        <p>@CentauriAscend</p>
+                    </div>
+                    
+                    <div class="resource-card">
+                        <div class="resource-icon"><i class="fab fa-github"></i></div>
+                        <h3>GitHub</h3>
+                        <p>github.com/CentauriAscendan</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-title">CENTAURI ASCENDAN</h3>
+                    <p>Ascending to the Stars: Simulate Your Space Future</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#details">Details</a></li>
+                        <li><a href="#resources">Resources</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3 class="footer-title">Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="https://science.nasa.gov/3d-resources/" target="_blank">NASA 3D Models</a></li>
+                        <li><a href="https://www.roblox.com/" target="_blank">Roblox</a></li>
+                        <li><a href="https://www.blender.org/" target="_blank">Blender</a></li>
+                        <li><a href="https://www.asc-csa.gc.ca/eng/youth-educators/why-the-moon.asp" target="_blank">Why the Moon? (CSA)</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 CENTAURI ASCENDAN. All rights reserved.</p>
+                <p>Based on data and resources from NASA. Developed with ❤️ in Peru and Latin America.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="luna-e" id="luna-e">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <div class="chat-window" id="chat-window">
+        <div class="chat-header">
+            <h3>Luna-E</h3>
+            <i class="fas fa-times" id="close-chat"></i>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="chat-message">
+                <div class="message-bubble">
+                    Hello! I'm Luna-E, your space guide. How can I help you today?
+                </div>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chat-input" placeholder="Type your message...">
+            <button id="send-message"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script>
+        // Generate stars
+        const starsContainer = document.getElementById('stars');
+        const numberOfStars = 200;
+        
+        for (let i = 0; i < numberOfStars; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.animationDelay = `${Math.random() * 4}s`;
+            starsContainer.appendChild(star);
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                window.scrollTo({
+                    top: targetElement.offsetTop - 70,
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Chat functionality
+        const lunaE = document.getElementById('luna-e');
+        const chatWindow = document.getElementById('chat-window');
+        const closeChat = document.getElementById('close-chat');
+        const chatInput = document.getElementById('chat-input');
+        const chatBody = document.getElementById('chat-body');
+        const sendMessage = document.getElementById('send-message');
+
+        lunaE.addEventListener('click', () => {
+            chatWindow.style.display = 'flex';
+        });
+
+        closeChat.addEventListener('click', () => {
+            chatWindow.style.display = 'none';
+        });
+
+        function addMessage(message, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${isUser ? 'user' : ''}`;
+            
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+            bubble.textContent = message;
+            
+            messageDiv.appendChild(bubble);
+            chatBody.appendChild(messageDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        function handleSendMessage() {
+            const message = chatInput.value.trim();
+            if (message) {
+                addMessage(message, true);
+                chatInput.value = '';
+                
+                // Simulate Luna-E response
+                setTimeout(() => {
+                    const responses = [
+                        "Interesting question! Class III habitats are inflatable and built in situ with lunar materials.",
+                        "Cosmic radiation is one of the biggest challenges in space. We need adequate shielding to protect ourselves.",
+                        "The ECLSS system recycles air and water in the habitat, making it sustainable for long missions.",
+                        "Temperatures on the Moon can vary between -270°C and +120°C. That's why we need advanced thermal systems!",
+                        "Did you know that Aracely Quispe Neira, a Peruvian engineer, leads important missions at NASA?",
+                        "In Roblox, you can simulate habitat construction and see how they respond to different space conditions.",
+                        "Microgravity affects how we move and work in space. Ergonomic designs are crucial."
+                    ];
+                    
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    addMessage(randomResponse);
+                }, 1000);
+            }
+        }
+
+        sendMessage.addEventListener('click', handleSendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSendMessage();
+            }
+        });
+
+        // Presentation controls
+        const fullscreenBtns = document.querySelectorAll('.presentation-btn[data-iframe]');
+        const refreshBtns = document.querySelectorAll('.presentation-btn[data-iframe]');
+        const downloadBtns = document.querySelectorAll('.presentation-btn[data-link]');
+        const presentationIframes = document.querySelectorAll('.presentation-iframe');
+
+        fullscreenBtns.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                const iframeIndex = btn.getAttribute('data-iframe');
+                const iframe = presentationIframes[iframeIndex];
+                if (iframe.requestFullscreen) {
+                    iframe.requestFullscreen();
+                } else if (iframe.webkitRequestFullscreen) {
+                    iframe.webkitRequestFullscreen();
+                } else if (iframe.msRequestFullscreen) {
+                    iframe.msRequestFullscreen();
+                }
+            });
+        });
+
+        refreshBtns.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                const iframeIndex = btn.getAttribute('data-iframe');
+                const iframe = presentationIframes[iframeIndex];
+                iframe.src = iframe.src;
+            });
+        });
+
+        downloadBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const link = btn.getAttribute('data-link');
+                window.open(link, '_blank');
+            });
+        });
+
+        // Animate progress bars when they come into view
+        const observerOptions = {
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const progressBar = entry.target;
+                    const width = progressBar.style.width;
+                    progressBar.style.width = '0';
+                    setTimeout(() => {
+                        progressBar.style.width = width;
+                    }, 100);
+                    observer.unobserve(progressBar);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.progress-bar').forEach(bar => {
+            observer.observe(bar);
+        });
+
+        // Add hover effect to cards
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.4)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.3)';
+            });
+        });
+    </script>
+</body>
+</html>
